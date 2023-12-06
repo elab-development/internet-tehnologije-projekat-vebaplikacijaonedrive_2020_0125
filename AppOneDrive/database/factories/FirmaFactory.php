@@ -17,7 +17,9 @@ class FirmaFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'PIB' => fake()->numberBetween(100000000, 999999999),
+            'name' => fake()->company(),
+            'createdAt' => fake()->date()
         ];
     }
 }

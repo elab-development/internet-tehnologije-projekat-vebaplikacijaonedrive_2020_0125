@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Firma;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +18,16 @@ class ZaposleniFactory extends Factory
      */
     public function definition(): array
     {
+        $users = User::all();
+        $firms = Firma::all();
+
+        $user = collect($users)->random();
+        $firm = collect($firms)->random();
         return [
-            //
+            'user_id' => $user->id,
+            'firma_pib' => $firm->PIB,
+            'AddedAt' => fake()->date(),
+            'privileges' => fake()->randomElement(['Read', 'Write', 'Admin'])
         ];
     }
 }

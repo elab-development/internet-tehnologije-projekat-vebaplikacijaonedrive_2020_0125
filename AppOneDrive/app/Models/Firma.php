@@ -9,7 +9,7 @@ class Firma extends Model
 {
     use HasFactory;
 
-
+    public $timestamps = false;
     
     public function zaposleni()
     {
