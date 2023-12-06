@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('firma', function (Blueprint $table) {
-            $table->id();
+        Schema::create('firmas', function (Blueprint $table) {
             $table->string('PIB');
+            $table->primary('PIB');
             $table->string('Name');
             $table->dateTime('CreatedAt');          
         });

@@ -8,4 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Zaposleni extends Model
 {
     use HasFactory;
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function firma()
+    {
+        return $this->belongsTo(Firma::class);
+    }
 }

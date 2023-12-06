@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('zaposleni', function (Blueprint $table) {
+        Schema::create('zaposlenis', function (Blueprint $table) {
             $table->id();
             $table->dateTime('AddedAt');
             $table->string('privileges');
