@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('zaposlenis',function(Blueprint $table){
+        Schema::table('members',function(Blueprint $table){
             $table->string('firma_pib')->after('id');
             $table->foreignId('user_id')->after('id');
             $table->dropColumn('id');
-            $table->foreign('firma_pib')->references('PIB')->on('firmas');
+            $table->foreign('firma_pib')->references('PIB')->on('firms');
             $table->foreign('user_id')->references('id')->on('users');
             $table->primary(array('firma_pib','user_id'));
         });

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Zaposleni extends Model
+class Member extends Model
 {
     use HasFactory;
 
@@ -15,8 +15,8 @@ class Zaposleni extends Model
     {
         return $this->belongsTo(User::class);
     }
-    public function firma()
+    public function firm()
     {
-        return $this->belongsTo(Firma::class);
+        return $this->belongsTo(Firm::class);
     }
 }

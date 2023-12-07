@@ -5,14 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Firma extends Model
+class Firm extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
     
-    public function zaposleni()
+    public function member()
     {
-        return $this->hasMany(Zaposleni::class);
+        return $this->hasMany(Member::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

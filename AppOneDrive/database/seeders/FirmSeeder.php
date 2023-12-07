@@ -2,19 +2,19 @@
 
 namespace Database\Seeders;
 
-use App\Models\Firma;
+use App\Models\Firm;
 use DateTime;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class FirmaSeeder extends Seeder
+class FirmSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Firma::create([
+        Firm::create([
             'PIB' => 123456789,
             'name' => 'Firma LLC',
             'createdAt' => new DateTime()

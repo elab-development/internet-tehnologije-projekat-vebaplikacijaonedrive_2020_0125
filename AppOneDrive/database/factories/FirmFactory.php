@@ -2,12 +2,13 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Firma>
  */
-class FirmaFactory extends Factory
+class FirmFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,7 +20,8 @@ class FirmaFactory extends Factory
         return [
             'PIB' => fake()->numberBetween(100000000, 999999999),
             'name' => fake()->company(),
-            'createdAt' => fake()->date()
+            'address'=>fake()->streetAddress(),
+            'createdAt' => fake()->dateTime(),
+            'user_id' => User::factory(),
         ];
-    }
-}
+    }}
