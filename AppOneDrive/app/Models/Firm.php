@@ -9,7 +9,9 @@ class Firm extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = 'PIB';
     public $timestamps = false;
+    public $incrementing = false;
     
     public function member()
     {

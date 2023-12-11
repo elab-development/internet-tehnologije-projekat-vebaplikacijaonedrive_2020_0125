@@ -9,7 +9,9 @@ class Member extends Model
 {
     use HasFactory;
 
+    protected $primaryKey = ['user_id', 'firma_pib'];
     public $timestamps = false;
+    public $incrementing = false;
 
     public function user()
     {
