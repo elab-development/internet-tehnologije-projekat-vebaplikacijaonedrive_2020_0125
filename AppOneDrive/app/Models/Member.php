@@ -13,6 +13,14 @@ class Member extends Model
     public $timestamps = false;
     public $incrementing = false;
 
+    protected $fillable = [
+        'user_id',
+        'firm_pib',
+        'AddedAt',
+        'privileges',
+    ];
+
+
     public function user()
     {
         return $this->belongsTo(User::class);

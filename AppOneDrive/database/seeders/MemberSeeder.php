@@ -21,7 +21,7 @@ class MemberSeeder extends Seeder
         foreach($users as $u){
                 Member::create([
                     'user_id' => $u->id,
-                    'firma_pib' => $firm->PIB,
+                    'firm_pib' => $firm->PIB,
                     'addedAt' => new DateTime(),
                     'privileges' => collect(['Read','Write'])->random()
                 ]);

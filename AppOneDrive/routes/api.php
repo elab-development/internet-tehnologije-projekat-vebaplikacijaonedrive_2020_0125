@@ -35,7 +35,7 @@ Route::put('/firm/update/{PIB}', [FirmController::class, 'update']);
 Route::delete('/firm/delete/{PIB}', [FirmController::class, 'destroy']);
 
 //Member routes:
-Route::get('/member/{userId}/{PIB}', [MemberController::class, 'show']);
-Route::post('/member/add', [MemberController::class, 'store']);
-Route::put('/member/update/{userId}/{PIB}', [MemberController::class, 'update']);
-Route::delete('/member/delete/{userId}/{PIB}', [MemberController::class, 'destroy']);
+Route::get('/member/{PIB}', [MemberController::class, 'show']);
+Route::post('/member', [MemberController::class, 'store']);
+Route::put('/member/{userId}/{PIB}', [MemberController::class, 'update']);
+Route::delete('/member/{userId}/{PIB}', [MemberController::class, 'destroy']);
