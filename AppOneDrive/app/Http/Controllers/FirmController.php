@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Graph\GraphApiCaller;
+use App\Graph\GraphHelper;
+use App\Graph\OneDriveController;
 use App\Http\Resources\FirmResource;
 use App\Models\Firm;
 use DateTime;
@@ -34,6 +37,9 @@ class FirmController extends Controller
         $newFirm->Address = $request->input('address');
         $newFirm->CreatedAt = new DateTime();
         $newFirm->user_id = $request->input('founderId');
+
+        $singletonInstance = app(OneDriveController::class);
+        $singletonInstance->createFirmFolder($request->input('name'));
 
         $newFirm->save();
         return response()->json(['message' => 'Company created successfully', 'company' => $newFirm], 201);
@@ -68,8 +74,12 @@ class FirmController extends Controller
     public function destroy($PIB)
     {
         $deleteFirm = Firm::findOrFail($PIB);
+        $name=$deleteFirm->Name;
 
+        $singletonInstance = app(OneDriveController::class);
+        $singletonInstance->deleteFirmFolder($name);
         $deleteFirm->delete();
+
         return response()->json(['message' => 'Company deleted successfully', 'company' => $deleteFirm], 200);
     }
 }
