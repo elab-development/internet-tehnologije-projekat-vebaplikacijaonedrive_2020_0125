@@ -22,10 +22,16 @@ class OneDriveController{
         return $this->caller->createFirmFolder($firmName);
     }
 
-    public function deleteFirmFolder($itemName){
+    public function deleteFirmFolder($firmName){
         $this->updateToken();
-        return $this->caller->deleteFirmFolder($itemName);
+        return $this->caller->deleteFirmFolder($firmName);
     }
+
+    public function renameFirmFolder($firmName,$newName){
+        $this->updateToken();
+        return $this->caller->renameFirmFolder($firmName,$newName);
+    }
+
 
     public function deleteItemInFirm($firmName,$firmItem){
         $this->updateToken();
@@ -37,17 +43,25 @@ class OneDriveController{
         return $this->caller->getDownloadLinkFileInFirm($firmName,$firmItem);
     }
 
+    public function getAllFilesInFirm($firmName){
+        $this->updateToken();
+        return $this->caller->getAllFilesInFirm($firmName);
+    }
+
     public function getDownloadContentFileInFirm($firmName,$firmItem){
         $this->updateToken();
         return $this->caller->getDownloadContentFileInFirm($firmName,$firmItem);
     }
+
     public function uploadFileInFirm($firmName,$firmItem){
         $this->updateToken();
         return $this->caller->uploadFileInFirm($firmName,$firmItem);
     }
 
-
-    
+    public function renameFileInFirm($firmName,$firmItem,$newName){
+        $this->updateToken();
+        return $this->caller->renameFileInFirm($firmName,$firmItem,$newName);
+    }
 
     private function updateToken(){
         

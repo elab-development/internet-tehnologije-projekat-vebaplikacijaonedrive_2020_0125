@@ -32,14 +32,28 @@ class GraphApiCaller{
         return $response;
     }
 
-    public function deleteFirmFolder($itemName){
+    public function deleteFirmFolder($firmName){
         $client = new Client();
         $headers = [
             'Authorization' => 'Bearer ' . $this->authToken,
             'Content-Type' => 'application/json',
         ];
-        $response = $client->delete("https://graph.microsoft.com/v1.0/me/drive/root:/". $itemName .":/", [
+        $response = $client->delete("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName .":/", [
             'headers' => $headers,
+        ]);
+        return $response;
+    }
+
+    public function renameFirmFolder($firmName,$newName){
+        $client = new Client();
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->authToken,
+            'Content-Type' => 'application/json',
+        ];
+        $body=["name"=>$newName];
+        $response = $client->patch("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName .":/", [
+            'headers' => $headers,
+            'json' => $body,
         ]);
         return $response;
     }
@@ -51,6 +65,19 @@ class GraphApiCaller{
             'Content-Type' => 'application/json',
         ];
         $response = $client->delete("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName ."/". $firmItem . ":/", [
+            'headers' => $headers,
+        ]);
+        return $response;
+    }
+
+    public function getAllFilesInFirm($firmName){
+
+        $client = new Client();
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->authToken,
+            'Content-Type' => 'application/json',
+        ];
+        $response = $client->get("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName .":/children?select=name,createdDateTime,lastModifiedDateTime,size", [
             'headers' => $headers,
         ]);
         return $response;
@@ -91,9 +118,24 @@ class GraphApiCaller{
         //$body=$this->getDownloadContentFileInFirm($firmName,$firmItem);
         $localFilePath = 'C:\Users\darek\Downloads\test.txt';
         $body=file_get_contents($localFilePath);
-        $response = $client->put("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName ."/2". $firmItem . ":/content", [
+        //////////////////////////////////////////////////////////////////
+        $response = $client->put("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName ."/". $firmItem . ":/content", [
             'headers' => $headers,
             'body' => $body,
+        ]);
+        return $response;
+    }
+
+    public function renameFileInFirm($firmName,$firmItem,$newName){
+        $client = new Client();
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->authToken,
+            'Content-Type' => 'application/json',
+        ];
+        $body=["name"=>$newName];
+        $response = $client->patch("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName ."/". $firmItem . ":/", [
+            'headers' => $headers,
+            'json' => $body,
         ]);
         return $response;
     }

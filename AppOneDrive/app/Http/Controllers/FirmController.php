@@ -63,8 +63,12 @@ class FirmController extends Controller
     public function update(Request $request, $PIB)
     {
         $updateFirm = Firm::findOrFail($PIB);
+        $oldName=$updateFirm->Name;
         $updateFirm->Name = $request->input('name', $updateFirm->Name);
         $updateFirm->Address = $request->input('address', $updateFirm->Address);
+
+        $singletonInstance = app(OneDriveController::class);
+        $singletonInstance->renameFirmFolder($oldName, $request->input('name'));
 
         $updateFirm->save();
         return response()->json(['message' => 'Company updated successfully', 'company' => $updateFirm], 200);
