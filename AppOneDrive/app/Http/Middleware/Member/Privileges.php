@@ -19,16 +19,19 @@ class Privileges
     {
         $firmName=$request->route("firmName");
         if(!isset($firmName) && $request->route("PIB")!=null){
-            $firmName=Firm::find($request->route("PIB"))->Name;
+            $firmName=Firm::find($request->route("PIB"));
+            if($firmName!=null)$firmName=$firmName->Name;
         }
         else if(!isset($firmName) && $request->input("PIB")!=null){
             $firmName=Firm::find($request->input("PIB"))->Name;
+            if($firmName!=null)$firmName=$firmName->Name;
         }
         else if(!isset($firmName) && $request->input("firm_pib")!=null){
             $firmName=Firm::find($request->input("firm_pib"))->Name;
+            if($firmName!=null)$firmName=$firmName->Name;
         }
-        else if(!isset($firmName))return response()->json(["message"=>"Bad request"],400);
-
+        if(!isset($firmName))return response()->json(["message"=>"Bad request"],400);
+        
         if($role=='admin'){
             $admin=Firm::Where('user_id',auth()->id())->Where('Name',$firmName)->get();
             if($admin->count()==0)return response()->json(["message"=>"you don't have the right privilege"],401);
