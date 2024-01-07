@@ -9,6 +9,7 @@ use App\Http\Resources\FirmResource;
 use App\Models\Firm;
 use DateTime;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class FirmController extends Controller
 {
@@ -31,6 +32,18 @@ class FirmController extends Controller
     // Creates a new firm
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'pib' => 'required|string|size:9',
+            'name' => 'required|string|max:255',
+            'address'=>'required|string|max:255',
+            'founderId'=>'required|numeric'
+        ]);
+ 
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+
+
         $newFirm = new Firm();
         $newFirm->PIB = $request->input('pib');
         $newFirm->Name = $request->input('name');
@@ -61,7 +74,8 @@ class FirmController extends Controller
 
     //Updates a firm
     public function update(Request $request, $PIB)
-    {
+    {   
+        
         $updateFirm = Firm::findOrFail($PIB);
         $oldName=$updateFirm->Name;
         $updateFirm->Name = $request->input('name', $updateFirm->Name);

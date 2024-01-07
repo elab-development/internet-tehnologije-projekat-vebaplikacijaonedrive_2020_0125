@@ -7,6 +7,7 @@ use App\Http\Resources\UsersResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -28,6 +29,18 @@ class UserController extends Controller
     // Creates a new user
     public function store(Request $request)
     {
+
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|string|max:255|email',
+            'password'=>'required|min:8',
+        ]);
+ 
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+
         $newUser = new User();
         $newUser->Name = $request->input('firstname');
         $newUser->Surname = $request->input('lastname');
@@ -35,6 +48,7 @@ class UserController extends Controller
         $newUser->Password = Hash::make($request->input('password'));
 
         $newUser->save();
+        $newUser->makeHidden(['Password']);
         return response()->json(['message' => 'User created successfully', 'user' => $newUser], 201);
     }
 
@@ -55,6 +69,17 @@ class UserController extends Controller
     // Updates a user
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'email' => 'required|string|max:255|email',
+            'password'=>'required|min:8',
+        ]);
+ 
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+
         $updateUser = User::findOrFail($id);
         $updateUser->Name = $request->input('firstname', $updateUser->Name);
         $updateUser->Surname = $request->input('lastname', $updateUser->Surname);
@@ -62,6 +87,7 @@ class UserController extends Controller
         $updateUser->Password = Hash::make($request->input('password', $updateUser->Password));
 
         $updateUser->save();
+        $updateUser->makeHidden(['Password']);
         return response()->json(['message' => 'User updated successfully', 'user' => $updateUser], 200);
     }
 
