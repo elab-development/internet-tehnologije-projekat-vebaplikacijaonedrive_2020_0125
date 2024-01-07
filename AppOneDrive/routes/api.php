@@ -68,8 +68,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         $localFilePath = 'C:\Users\darek\Downloads\test.txt';
         file_put_contents($localFilePath, $response);
         //
-        return response()->json([], 200);
-        //return response()->json($response, 200);
+        //return response()->json([], 200);
+        return response()->json($response, 200);
     });
 
     Route::put('/firms/files/{firmName}/{firmitem}',function($firmName,$firmItem){

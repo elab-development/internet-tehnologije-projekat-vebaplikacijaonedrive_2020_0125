@@ -5,6 +5,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Psr7\Utils;
 use stdClass;
 
 class GraphApiCaller{
@@ -123,6 +124,16 @@ class GraphApiCaller{
             'headers' => $headers,
             'body' => $body,
         ]);
+        $jsonData = json_decode($response->getBody(),true);
+        $selectedData = [
+            'createdDateTime' => $jsonData['createdDateTime'],
+            'lastModifiedDateTime' => $jsonData['lastModifiedDateTime'],
+            'name' => $jsonData['name'],
+            'size' => $jsonData['size'],
+        ];
+        $selectedData=['value'=>$selectedData];
+        $selectedData=json_encode($selectedData);
+        $response = $response->withBody(Utils::streamFor($selectedData));
         return $response;
     }
 
@@ -137,6 +148,16 @@ class GraphApiCaller{
             'headers' => $headers,
             'json' => $body,
         ]);
+        $jsonData = json_decode($response->getBody(),true);
+        $selectedData = [
+            'createdDateTime' => $jsonData['createdDateTime'],
+            'lastModifiedDateTime' => $jsonData['lastModifiedDateTime'],
+            'name' => $jsonData['name'],
+            'size' => $jsonData['size'],
+        ];
+        $selectedData=['value'=>$selectedData];
+        $selectedData=json_encode($selectedData);
+        $response = $response->withBody(Utils::streamFor($selectedData));
         return $response;
     }
 

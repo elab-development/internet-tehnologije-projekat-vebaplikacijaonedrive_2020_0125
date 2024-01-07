@@ -39,9 +39,9 @@ class FirmController extends Controller
         $newFirm->user_id = $request->input('founderId');
 
         $singletonInstance = app(OneDriveController::class);
+        $newFirm->save();
         $singletonInstance->createFirmFolder($request->input('name'));
 
-        $newFirm->save();
         return response()->json(['message' => 'Company created successfully', 'company' => $newFirm], 201);
     }
 

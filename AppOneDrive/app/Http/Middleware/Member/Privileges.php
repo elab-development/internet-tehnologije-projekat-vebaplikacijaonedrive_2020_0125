@@ -23,11 +23,11 @@ class Privileges
             if($firmName!=null)$firmName=$firmName->Name;
         }
         else if(!isset($firmName) && $request->input("PIB")!=null){
-            $firmName=Firm::find($request->input("PIB"))->Name;
+            $firmName=Firm::find($request->input("PIB"));
             if($firmName!=null)$firmName=$firmName->Name;
         }
         else if(!isset($firmName) && $request->input("firm_pib")!=null){
-            $firmName=Firm::find($request->input("firm_pib"))->Name;
+            $firmName=Firm::find($request->input("firm_pib"));
             if($firmName!=null)$firmName=$firmName->Name;
         }
         if(!isset($firmName))return response()->json(["message"=>"Bad request"],400);

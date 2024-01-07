@@ -66,7 +66,7 @@ class MemberController extends Controller
         
     }
 
-    // Gets a specific member
+    // Gets a specific members
     public function show(Request $request)
     {
         $pib = $request->route('PIB');
@@ -77,7 +77,7 @@ class MemberController extends Controller
             return response()->json($validator->errors(),400);
         }
 
-        $mem = Member::where('firm_pib', $pib)->get();
+        $mem = Member::where('firm_pib', $pib)->with('User')->get();
         if($mem->count()==0)return response()->json(["message"=>"Firm not found"],404);
         return MemberResource::collection($mem);
     }
