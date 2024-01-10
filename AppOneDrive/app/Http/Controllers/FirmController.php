@@ -36,7 +36,6 @@ class FirmController extends Controller
             'pib' => 'required|string|size:9',
             'name' => 'required|string|max:255',
             'address'=>'required|string|max:255',
-            'founderId'=>'required|numeric'
         ]);
  
         if($validator->fails()){
@@ -49,7 +48,7 @@ class FirmController extends Controller
         $newFirm->Name = $request->input('name');
         $newFirm->Address = $request->input('address');
         $newFirm->CreatedAt = new DateTime();
-        $newFirm->user_id = $request->input('founderId');
+        $newFirm->user_id = auth()->id();
 
         $singletonInstance = app(OneDriveController::class);
         $newFirm->save();

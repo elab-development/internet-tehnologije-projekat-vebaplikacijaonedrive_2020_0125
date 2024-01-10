@@ -53,9 +53,11 @@ class UserController extends Controller
     }
 
     // Gets a specific user
-    public function show(User $user)
+    public function show($ID)
     {
-        return new UserResource($user);
+        $user=User::find($ID);
+        if($user==null)return response()->json(['message' => 'Can not find the specific user'], 404);;
+        return response()->json(['user' => $user], 201);
     }
 
     /**
@@ -70,10 +72,10 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'firstname' => 'required|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email',
-            'password'=>'required|min:8',
+            'firstname' => 'string|max:255',
+            'lastname' => 'string|max:255',
+            'email' => 'string|max:255|email',
+            'password'=>'min:8',
         ]);
  
         if($validator->fails()){
@@ -81,10 +83,10 @@ class UserController extends Controller
         }
 
         $updateUser = User::findOrFail($id);
-        $updateUser->Name = $request->input('firstname', $updateUser->Name);
-        $updateUser->Surname = $request->input('lastname', $updateUser->Surname);
-        $updateUser->Email = $request->input('email', $updateUser->Email);
-        $updateUser->Password = Hash::make($request->input('password', $updateUser->Password));
+        if($request->input('firstname')!=null)$updateUser->Name = $request->input('firstname');
+        if($request->input('lastname')!=null)$updateUser->Surname = $request->input('lastname');
+        if($request->input('email')!=null)$updateUser->Email = $request->input('email');
+        if($request->input('password')!=null)$updateUser->Password = Hash::make($request->input('password'));
 
         $updateUser->save();
         $updateUser->makeHidden(['Password']);
@@ -94,9 +96,14 @@ class UserController extends Controller
     // Deletes a user
     public function destroy($id)
     {
-        $deleteUser = User::findOrFail($id);
+        try{
+            $deleteUser = User::findOrFail($id);
 
-        $deleteUser->delete();
-        return response()->json(['message' => 'User deleted successfully', 'user' => $deleteUser], 200);
+            $deleteUser->delete();
+            return response()->json(['message' => 'User deleted successfully', 'user' => $deleteUser], 200);
+        }catch(\Exception $ex){
+            return response()->json(['message' => 'To delete this user, first remove him from all teams'],400);
+        }
+        
     }
 }
