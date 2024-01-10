@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
  
+
+
 class AuthController extends Controller
 {
     public function register(Request $request){
@@ -50,8 +52,8 @@ class AuthController extends Controller
     }
 
     public function logout(){
-        $user = auth()->user;
-        $user->tokens()->delete();
+        $user=User::find(auth()->id());
+        DB::table('personal_access_tokens')->where('tokenable_id', auth()->id())->delete();
         return response()->json(['message' => 'Goodbye ' . $user->name]);
     }
 }
