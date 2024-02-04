@@ -53,9 +53,9 @@ class OneDriveController{
         return $this->caller->getDownloadContentFileInFirm($firmName,$firmItem);
     }
 
-    public function uploadFileInFirm($firmName,$firmItem){
+    public function uploadFileInFirm($req,$firmName,$firmItem){
         $this->updateToken();
-        return $this->caller->uploadFileInFirm($firmName,$firmItem);
+        return $this->caller->uploadFileInFirm($req,$firmName,$firmItem);
     }
 
     public function renameFileInFirm($firmName,$firmItem,$newName){

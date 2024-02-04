@@ -109,16 +109,17 @@ class GraphApiCaller{
         return $response->getBody();
     }
 
-    public function uploadFileInFirm($firmName,$firmItem){
+    public function uploadFileInFirm($req,$firmName,$firmItem){
         $client = new Client();
         $headers = [
             'Authorization' => 'Bearer ' . $this->authToken,
             'Content-Type' => 'text/plain',
         ];
+        $body=$req->input("file");
+        error_log($body);
         //TEST EXAMPLE
-        //$body=$this->getDownloadContentFileInFirm($firmName,$firmItem);
-        $localFilePath = 'C:\Users\darek\Downloads\test.txt';
-        $body=file_get_contents($localFilePath);
+        // $localFilePath = 'C:\Users\darek\Downloads\test.txt';
+        // $body=file_get_contents($localFilePath);
         //////////////////////////////////////////////////////////////////
         $response = $client->put("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName ."/". $firmItem . ":/content", [
             'headers' => $headers,

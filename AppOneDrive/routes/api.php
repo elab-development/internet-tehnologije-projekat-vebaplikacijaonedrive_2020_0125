@@ -4,6 +4,7 @@ use App\Http\Controllers\API\AuthController;
 use App\Graph\OneDriveController;
 use App\Http\Controllers\FirmController;
 use App\Http\Controllers\MemberController;
+use App\Http\Controllers\PaginationFirmController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserFirmController;
 use App\Http\Middleware\Member\Privileges;
@@ -39,6 +40,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     // User routes:
     Route::resource('users', UserController::class);
     Route::get('users/{id}/firms',[UserFirmController::class,'index']);
+    Route::put('users/changePassword/{id}', [UserController::class, 'changePassword']);
 
     // Firm routes:
     Route::post('/firms', [FirmController::class, 'store']);
@@ -72,8 +74,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         return response()->json($response, 200);
     });
 
-    Route::put('/firms/files/{firmName}/{firmitem}',function($firmName,$firmItem){
-        $response=app(OneDriveController::class)->uploadFileInFirm($firmName,$firmItem);
+    Route::post('/firms/files/{firmName}/{firmitem}',function(Request $req,$firmName,$firmItem){
+        $response=app(OneDriveController::class)->uploadFileInFirm($req,$firmName,$firmItem);
         return response()->json(json_decode($response->getBody()), $response->getStatusCode());
     })->middleware(Privileges::class . ':adminORwrite');
 
@@ -90,6 +92,12 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //Logout route:
     Route::post('/logout', [AuthController::class, 'logout']);
 
+
+
+    //pagination
+    Route::get('/firms/pagination/all/{perPage}/{page?}', [PaginationFirmController::class, 'index']);
+    Route::get('/firms/pagination/owner/{perPage}/{page?}', [PaginationFirmController::class, 'indexOwner']);
+    Route::get('/firms/pagination/member/{perPage}/{page?}', [PaginationFirmController::class, 'indexMember']);
 });
 
 
