@@ -116,7 +116,9 @@ class GraphApiCaller{
             'Content-Type' => 'text/plain',
         ];
         $body=$req->input("file");
+        $nesto=$req->input("data");
         error_log($body);
+        error_log($nesto);
         //TEST EXAMPLE
         // $localFilePath = 'C:\Users\darek\Downloads\test.txt';
         // $body=file_get_contents($localFilePath);

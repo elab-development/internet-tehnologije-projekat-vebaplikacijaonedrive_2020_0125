@@ -7,8 +7,13 @@ use App\Http\Resources\UsersResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
- 
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
+
 class UserController extends Controller
 {
     // Gets all the users
@@ -121,5 +126,82 @@ class UserController extends Controller
         } catch (\Exception $ex) {
             return response()->json(['message' => 'To delete this user, first remove him from all teams'], 400);
         }
+    }
+    // Sends reset link for the password
+    public function sendResetLink(Request $request)
+    {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|string|max:255|email',
+            ]);
+ 
+            if ($validator->fails()) {
+                return response()->json($validator->errors(), 400);
+            }
+ 
+            $user = User::where('email', $request->input('email'))->first();
+ 
+            if (!$user) {
+                return response()->json(['message' => 'User doesnt exist.'], 404);
+            }
+ 
+            $userEmail = $request->input('email');
+ 
+            // Generate reset token
+            $token = Password::createToken(User::where('email', $userEmail)->first());
+ 
+            // Construct reset link
+            $resetLink = url("http://localhost:3000/resetPassword?email={$userEmail}&token={$token}");
+ 
+            // Construct DSN
+            $dsn = sprintf(
+                '%s://%s:%s@%s:%s',
+                env('MAIL_MAILER'),
+                urlencode(env('MAIL_USERNAME')),
+                urlencode(env('MAIL_PASSWORD')),
+                env('MAIL_HOST'),
+                env('MAIL_PORT')
+            );
+ 
+            // Compose email
+            $email = (new Email())
+                ->from(env('MAIL_FROM_ADDRESS'))
+                ->to($userEmail)
+                ->subject('Password Reset Request')
+                ->text("Click the link to reset your password:\n$resetLink");
+ 
+            // Create Symfony Mailer instance
+            $mailer = new Mailer(Transport::fromDsn($dsn));
+ 
+            // Send email
+            $mailer->send($email);
+ 
+            return response()->json(['message' => 'Password reset email sent successfully.'], 200);
+        } catch (\Throwable $e) {
+            // Log the error
+            Log::error('Error sending password reset email: ' . $e->getMessage());
+ 
+            return response()->json(['error' => 'An error occurred while processing your request.'], 500);
+        }
+    }
+ 
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'token' => 'required|string',
+            'password' => 'required|string|min:8',
+        ]);
+ 
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+ 
+        $updateUser = User::where('email', $request->input('email'))->first();
+        if (!$updateUser) return response()->json(['message' => 'User doesnt exist'], 404);
+ 
+        $updateUser->password = Hash::make($request->input('password'));
+        $updateUser->save();
+        return response()->json(['message' => 'Password reset successfully'], 200);
     }
 }

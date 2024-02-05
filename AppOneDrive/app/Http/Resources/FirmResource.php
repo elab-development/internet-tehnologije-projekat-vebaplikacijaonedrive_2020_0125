@@ -15,6 +15,7 @@ class FirmResource extends JsonResource
             'name' => $this->resource->Name,
             'adress' => $this->resource->Address,
             'founded' => $this->resource->CreatedAt,
+            'description'=>$this->resource->description,
             'founder' => new UserResource($this->resource->user)
         ];
     }

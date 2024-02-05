@@ -36,6 +36,7 @@ class FirmController extends Controller
             'pib' => 'required|string|size:9',
             'name' => 'required|string|max:255',
             'address'=>'required|string|max:255',
+            'description'=>'required|string',
         ]);
  
         if($validator->fails()){
@@ -47,6 +48,7 @@ class FirmController extends Controller
         $newFirm->PIB = $request->input('pib');
         $newFirm->Name = $request->input('name');
         $newFirm->Address = $request->input('address');
+        $newFirm->description = $request->input('description');
         $newFirm->CreatedAt = new DateTime();
         $newFirm->user_id = auth()->id();
 

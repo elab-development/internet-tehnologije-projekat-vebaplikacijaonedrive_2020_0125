@@ -35,6 +35,12 @@ Route::post('/register', [AuthController::class, 'register']);
 //Login route:
 Route::post('/login', [AuthController::class, 'login']);
 
+// Forgot password route:
+Route::post('/forgotPassword', [UserController::class, 'sendResetLink']);
+ 
+// Reset password route:
+Route::match(['get', 'post'], '/resetPassword', [UserController::class, 'resetPassword']);
+
 Route::group(['middleware' => ['auth:sanctum']], function() {
         
     // User routes:
@@ -48,7 +54,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::delete('/firms/{PIB}', [FirmController::class, 'destroy'])->middleware(Privileges::class . ':admin');;
 
     //Member routes:
-    Route::get('/members/{PIB}', [MemberController::class, 'show']);
+    Route::get('/members/{PIB}/{perPage}/{page?}', [MemberController::class, 'showPagination']);
+    Route::get('/searchMembers/{PIB}/{value}', [MemberController::class, 'searchMembers']);
     Route::post('/members', [MemberController::class, 'store'])->middleware(Privileges::class . ':admin');
     Route::put('/members/{userId}/{PIB}', [MemberController::class, 'update'])->middleware(Privileges::class . ':admin');
     Route::delete('/members/{userId}/{PIB}', [MemberController::class, 'destroy'])->middleware(Privileges::class . ':admin');
@@ -74,7 +81,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         return response()->json($response, 200);
     });
 
-    Route::post('/firms/files/{firmName}/{firmitem}',function(Request $req,$firmName,$firmItem){
+    Route::put('/firms/files/{firmName}/{firmitem}',function(Request $req,$firmName,$firmItem){
         $response=app(OneDriveController::class)->uploadFileInFirm($req,$firmName,$firmItem);
         return response()->json(json_decode($response->getBody()), $response->getStatusCode());
     })->middleware(Privileges::class . ':adminORwrite');
@@ -92,12 +99,11 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     //Logout route:
     Route::post('/logout', [AuthController::class, 'logout']);
 
-
-
     //pagination
     Route::get('/firms/pagination/all/{perPage}/{page?}', [PaginationFirmController::class, 'index']);
     Route::get('/firms/pagination/owner/{perPage}/{page?}', [PaginationFirmController::class, 'indexOwner']);
     Route::get('/firms/pagination/member/{perPage}/{page?}', [PaginationFirmController::class, 'indexMember']);
+    Route::get('/members/pagination/{perPage}/{page?}',[PaginationFirmController::class, 'indexMembers']);
 });
 
 

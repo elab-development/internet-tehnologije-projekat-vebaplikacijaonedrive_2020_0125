@@ -67,19 +67,20 @@ class MemberController extends Controller
     }
 
     // Gets a specific members
-    public function show(Request $request)
+    public function showPagination(Request $request,$PIB,$perPage, $page = 1)
     {
-        $pib = $request->route('PIB');
-        $validator = Validator::make(['PIB' => $pib], [
+        $validator = Validator::make(['PIB' => $PIB], [
             'PIB' => 'required|string|size:9',
         ]);
         if($validator->fails()){
             return response()->json($validator->errors(),400);
         }
 
-        $mem = Member::where('firm_pib', $pib)->with('User')->get();
-        if($mem->count()==0)return response()->json(["message"=>"Firm not found"],404);
-        return MemberResource::collection($mem);
+        $mem = Member::where('firm_pib', $PIB)->with('User')->paginate($perPage, ['*'], 'members', $page);
+        if(count($mem->items())==0)return response()->json(["message"=>"Firm not found or there is no members"],404);
+        $data=$mem->items();
+        $stranice=$mem->lastPage();
+        return response()->json(['data' => $data, 'pages' => $stranice], 200);
     }
 
     /**
@@ -111,7 +112,7 @@ class MemberController extends Controller
         }
 
         $result=Member::Where('user_id',$ID)->Where('firm_pib',$PIB)->update(['privileges'=>$request->input('privileges')]);
-        if($result==1)return response()->json(['message' => 'Member updated successfully', 'member' => Member::Where('user_id',$ID)->Where('firm_pib',$PIB)->get()], 201);
+        if($result==1)return response()->json(['message' => 'Member updated successfully', 'member' => Member::Where('user_id',$ID)->Where('firm_pib',$PIB)->get()], 200);
         else return response()->json(['message' => 'Error while updating member or there is nothing to update'],400);
     }
 
@@ -130,7 +131,19 @@ class MemberController extends Controller
         }
 
         $result=Member::Where('user_id',$ID)->Where('firm_pib',$PIB)->delete();
-        if($result==1) return response()->json(['message' => 'Member deleted successfully'], 201);
+        if($result==1) return response()->json(['message' => 'Member deleted successfully'], 200);
         else return response()->json(['message' => 'Error while deleting member'],400);
+    }
+    function searchMembers(Request $request,$PIB,$value){
+        $members=DB::table('members')
+        ->leftjoin('users','members.user_id','=','users.id')
+        ->where('firm_pib','!=', $PIB)
+        ->where(function($query) use ($value){
+            $query->where('users.name','LIKE','%'. $value .'%')->orWhere('users.surname','LIKE','%'. $value .'%');
+        })
+        ->selectRaw("users.id,users.name,users.surname")
+        ->distinct("users.id")
+        ->get(); 
+        return response()->json(['members' => $members], 200);
     }
 }
