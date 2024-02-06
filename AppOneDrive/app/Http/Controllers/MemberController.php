@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\MemberResource;
 use App\Models\Member;
+use App\Models\User;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -135,15 +136,11 @@ class MemberController extends Controller
         else return response()->json(['message' => 'Error while deleting member'],400);
     }
     function searchMembers(Request $request,$PIB,$value){
-        $members=DB::table('members')
-        ->leftjoin('users','members.user_id','=','users.id')
-        ->where('firm_pib','!=', $PIB)
-        ->where(function($query) use ($value){
-            $query->where('users.name','LIKE','%'. $value .'%')->orWhere('users.surname','LIKE','%'. $value .'%');
-        })
-        ->selectRaw("users.id,users.name,users.surname")
-        ->distinct("users.id")
-        ->get(); 
-        return response()->json(['members' => $members], 200);
+        $members=Member::where('firm_pib',$PIB)->selectRaw('user_id');    
+        $users=User::where('id','!=',auth()->id())->whereNotIn('id',$members)->where(function ($query) use ($value) {
+            $query->where('name', 'LIKE',$value.'%')
+                  ->orWhere('surname', 'LIKE',$value.'%');
+        })->select('id','name','surname')->get();  
+        return response()->json(['members' => $users], 200);
     }
 }
