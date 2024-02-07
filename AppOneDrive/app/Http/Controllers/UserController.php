@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
@@ -199,7 +200,14 @@ class UserController extends Controller
  
         $updateUser = User::where('email', $request->input('email'))->first();
         if (!$updateUser) return response()->json(['message' => 'User doesnt exist'], 404);
+
+        $resetTokenBase=DB::table('password_reset_tokens')->where('email',$updateUser->email)->first()->token;
  
+        if(!Hash::check($request->input('token'), $resetTokenBase)){
+            error_log("Nije isto");
+            return response()->json(['message' => 'Error'], 404);
+        }
+
         $updateUser->password = Hash::make($request->input('password'));
         $updateUser->save();
         return response()->json(['message' => 'Password reset successfully'], 200);

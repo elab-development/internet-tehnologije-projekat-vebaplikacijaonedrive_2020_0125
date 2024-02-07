@@ -13,10 +13,10 @@ class FirmResource extends JsonResource
         return[
             'PIB' => $this->resource->PIB,
             'name' => $this->resource->Name,
-            'adress' => $this->resource->Address,
+            'address' => $this->resource->Address,
             'founded' => $this->resource->CreatedAt,
             'description'=>$this->resource->description,
-            'founder' => new UserResource($this->resource->user)
+            // 'founder' => new UserResource($this->resource->user)
         ];
     }
 }

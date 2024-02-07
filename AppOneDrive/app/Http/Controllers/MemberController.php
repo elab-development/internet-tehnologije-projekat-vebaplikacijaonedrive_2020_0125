@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\Member\Privileges;
 use App\Http\Resources\MemberResource;
+use App\Models\Firm;
 use App\Models\Member;
 use App\Models\User;
 use DateTime;
@@ -135,12 +137,19 @@ class MemberController extends Controller
         if($result==1) return response()->json(['message' => 'Member deleted successfully'], 200);
         else return response()->json(['message' => 'Error while deleting member'],400);
     }
-    function searchMembers(Request $request,$PIB,$value){
+    function searchMembers($PIB,$value){
         $members=Member::where('firm_pib',$PIB)->selectRaw('user_id');    
         $users=User::where('id','!=',auth()->id())->whereNotIn('id',$members)->where(function ($query) use ($value) {
             $query->where('name', 'LIKE',$value.'%')
                   ->orWhere('surname', 'LIKE',$value.'%');
         })->select('id','name','surname')->get();  
         return response()->json(['members' => $users], 200);
+    }
+    function returnMemberRole($PIB){
+        $admin=Firm::where('PIB',$PIB)->where('user_id',auth()->id())->get();
+        if($admin->count()==1)return response()->json(['privileges' => 'admin'],200);
+        $member=Member::where('firm_pib',$PIB)->where('user_id',auth()->id())->get();
+        if($member->count()==1)return response()->json(['privileges' => $member[0]->privileges],200);
+        return response()->json([],400);
     }
 }

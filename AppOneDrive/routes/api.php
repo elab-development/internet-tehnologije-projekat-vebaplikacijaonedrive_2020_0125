@@ -49,13 +49,16 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::put('users/changePassword/{id}', [UserController::class, 'changePassword']);
 
     // Firm routes:
+    Route::get('/firms/{PIB}', [FirmController::class, 'show']);
     Route::post('/firms', [FirmController::class, 'store']);
     Route::put('/firms/{PIB}', [FirmController::class, 'update'])->middleware(Privileges::class . ':admin');;
     Route::delete('/firms/{PIB}', [FirmController::class, 'destroy'])->middleware(Privileges::class . ':admin');;
 
     //Member routes:
-    Route::get('/members/{PIB}/{perPage}/{page?}', [MemberController::class, 'showPagination']);
-    Route::get('/searchMembers/{PIB}/{value}', [MemberController::class, 'searchMembers']);
+
+    Route::get('/members/pagination/{PIB}/{perPage}/{page?}', [MemberController::class, 'showPagination']);
+    Route::get('/members/searchMembers/{PIB}/{value}', [MemberController::class, 'searchMembers']);
+    Route::get('/members/role/{PIB}', [MemberController::class, 'returnMemberRole']);
     Route::post('/members', [MemberController::class, 'store'])->middleware(Privileges::class . ':admin');
     Route::put('/members/{userId}/{PIB}', [MemberController::class, 'update'])->middleware(Privileges::class . ':admin');
     Route::delete('/members/{userId}/{PIB}', [MemberController::class, 'destroy'])->middleware(Privileges::class . ':admin');
@@ -89,7 +92,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::delete('/firms/files/{firmName}/{firmitem}',function($firmName,$firmItem){
         $response=app(OneDriveController::class)->deleteItemInFirm($firmName,$firmItem);
         return response()->json([], $response->getStatusCode());
-    })->middleware(Privileges::class . ':admin');
+    })->middleware(Privileges::class . ':adminORwrite');
 
     Route::patch('/firms/files/{firmName}/{firmitem}',function(Request $req,$firmName,$firmItem){
         $response=app(OneDriveController::class)->renameFileInFirm($firmName,$firmItem,$req->input('name'));

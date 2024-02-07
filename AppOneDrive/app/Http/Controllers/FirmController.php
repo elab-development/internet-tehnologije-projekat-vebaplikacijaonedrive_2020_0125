@@ -60,8 +60,9 @@ class FirmController extends Controller
     }
 
     // Gets a specific firm
-    public function show(Firm $firm)
+    public function show(Firm $firm, $PIB)
     {
+        $firm = Firm::findOrFail($PIB);
         return new FirmResource($firm);
     }
 
