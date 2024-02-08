@@ -115,17 +115,12 @@ class GraphApiCaller{
             'Authorization' => 'Bearer ' . $this->authToken,
             'Content-Type' => 'text/plain',
         ];
-        $body=$req->input("file");
-        $nesto=$req->input("data");
-        error_log($body);
-        error_log($nesto);
-        //TEST EXAMPLE
-        // $localFilePath = 'C:\Users\darek\Downloads\test.txt';
-        // $body=file_get_contents($localFilePath);
-        //////////////////////////////////////////////////////////////////
+         $fileData = $req->getContent();
+         file_put_contents('C:\Users\darek\Downloads\test.txt', $fileData);
+         
         $response = $client->put("https://graph.microsoft.com/v1.0/me/drive/root:/". $firmName ."/". $firmItem . ":/content", [
             'headers' => $headers,
-            'body' => $body,
+            'body' => $fileData,
         ]);
         $jsonData = json_decode($response->getBody(),true);
         $selectedData = [

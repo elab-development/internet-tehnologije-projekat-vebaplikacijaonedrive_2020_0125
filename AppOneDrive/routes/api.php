@@ -84,7 +84,7 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
         return response()->json($response, 200);
     });
 
-    Route::put('/firms/files/{firmName}/{firmitem}',function(Request $req,$firmName,$firmItem){
+    Route::post('/firms/files/{firmName}/{firmitem}',function(Request $req,$firmName,$firmItem){
         $response=app(OneDriveController::class)->uploadFileInFirm($req,$firmName,$firmItem);
         return response()->json(json_decode($response->getBody()), $response->getStatusCode());
     })->middleware(Privileges::class . ':adminORwrite');

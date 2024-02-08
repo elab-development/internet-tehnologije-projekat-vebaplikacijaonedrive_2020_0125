@@ -204,7 +204,6 @@ class UserController extends Controller
         $resetTokenBase=DB::table('password_reset_tokens')->where('email',$updateUser->email)->first()->token;
  
         if(!Hash::check($request->input('token'), $resetTokenBase)){
-            error_log("Nije isto");
             return response()->json(['message' => 'Error'], 404);
         }
 
