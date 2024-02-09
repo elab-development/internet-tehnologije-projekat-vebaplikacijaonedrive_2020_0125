@@ -77,8 +77,8 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/firms/files/{firmName}/{firmitem}/content',function($firmName,$firmItem){
         $response=app(OneDriveController::class)->getDownloadContentFileInFirm($firmName,$firmItem);
         //test example, it will return body of response to client !
-        $localFilePath = 'C:\Users\darek\Downloads\test.txt';
-        file_put_contents($localFilePath, $response);
+        //$localFilePath = 'C:\Users\darek\Downloads\test.txt';
+        //file_put_contents($localFilePath, $response);
         //
         //return response()->json([], 200);
         return response()->json($response, 200);
@@ -106,7 +106,6 @@ Route::group(['middleware' => ['auth:sanctum']], function() {
     Route::get('/firms/pagination/all/{perPage}/{page?}', [PaginationFirmController::class, 'index']);
     Route::get('/firms/pagination/owner/{perPage}/{page?}', [PaginationFirmController::class, 'indexOwner']);
     Route::get('/firms/pagination/member/{perPage}/{page?}', [PaginationFirmController::class, 'indexMember']);
-    Route::get('/members/pagination/{perPage}/{page?}',[PaginationFirmController::class, 'indexMembers']);
 });
 
 
